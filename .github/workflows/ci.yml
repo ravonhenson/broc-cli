@@ -33,5 +33,5 @@ jobs:
             exit 1
           fi
 
-      - name: Test
+      - name: Test (unit, restic-integration, and e2e - restic is on PATH so none are skipped)
         run: go test ./... -race -cover

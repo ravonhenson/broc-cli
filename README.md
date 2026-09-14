@@ -107,7 +107,10 @@ scratch:
 sample:
   files_per_run: 15
   max_file_size_mb: 500             # skip files larger than this; 0 = no limit
-  reverify_after_days: 30
+  reverify_after_days: 30           # 0 or omitted both mean "use the default 30" (YAML
+                                     # can't tell an explicit 0 from an unset field) -
+                                     # there's currently no way to force reverification
+                                     # on every single run
 
 state:
   path: ~/.local/state/drillbit/my-backups.db
@@ -125,6 +128,20 @@ Run `drillbit init --help` to generate one of these interactively.
 ## Extensibility
 
 `drillbit` talks to backup tools through a small `backend.Backend` interface (`internal/backend/backend.go`): list snapshots, list files in a snapshot, restore one file. The restic implementation is the reference (`internal/backend/restic`); adding Borg or Kopia is a matter of implementing that interface against their respective CLIs/APIs and registering it - no changes needed to sampling, state, verification, or reporting. Contributions for either are very welcome.
+
+## Testing
+
+```sh
+go test ./...
+```
+
+Three layers, all under `go test ./...`:
+
+- **Unit tests** (`internal/**/*_test.go`) - pure logic (sampler selection, state ledger, config defaults, report formatting, notify payloads), plus the restic backend's `--json` parsing exercised against fake `restic` shell scripts so it needs no real binary.
+- **Restic integration tests** (`internal/backend/restic/restic_integration_test.go`) - drive the real `restic` binary against real local repositories: unicode/space-y filenames, byte-exact restore round-trips, wrong passwords, an `--include` that matches nothing, and a deliberately corrupted repository (confirms restic's own blob-checksum verification fails the restore rather than silently handing back different bytes - the mismatch-baseline path in `internal/verify` is defense in depth on top of that).
+- **End-to-end tests** (`e2e/`) - build the actual `drillbit` binary and drive it as a subprocess exactly as a user would: `init`/`run`/`status`, exit codes 0/1/2, `--json` schema, webhook/healthcheck delivery, and two overlapping `run`s against the same state db failing cleanly instead of racing.
+
+Tests that need the real `restic` binary skip themselves (not fail) when it isn't on `PATH`, so `go test ./...` still works without it installed - CI installs restic so the full matrix always runs there.
 
 ## Roadmap
 
