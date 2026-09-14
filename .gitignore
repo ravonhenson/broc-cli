@@ -1,0 +1,5 @@
+/bin/
+/dist/
+*.db
+drillbit.yaml
+.DS_Store
