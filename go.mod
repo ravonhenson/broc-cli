@@ -1,4 +1,4 @@
-module github.com/ravonhenson/drillbit
+module github.com/ravonhenson/broc-cli
 
 go 1.27.1
 

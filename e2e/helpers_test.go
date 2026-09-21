@@ -1,4 +1,4 @@
-// Package e2e drives the real drillbit binary as a subprocess against real
+// Package e2e drives the real broc binary as a subprocess against real
 // restic repositories, the same way a user actually invokes it. Unlike the
 // unit and backend-integration tests, this is the layer that catches
 // wiring bugs between packages (cobra flag plumbing, config file parsing,
@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ravonhenson/drillbit/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/config"
 )
 
 const testPassword = "e2e-test-password-123"
@@ -21,18 +21,18 @@ const testPassword = "e2e-test-password-123"
 var binPath string
 
 func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "drillbit-e2e-bin")
+	dir, err := os.MkdirTemp("", "broc-e2e-bin")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 	defer os.RemoveAll(dir)
 
-	binPath = filepath.Join(dir, "drillbit")
-	build := exec.Command("go", "build", "-o", binPath, "./cmd/drillbit")
+	binPath = filepath.Join(dir, "broc")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/broc")
 	build.Dir = repoRoot()
 	if out, err := build.CombinedOutput(); err != nil {
-		fmt.Fprintf(os.Stderr, "building drillbit for e2e tests: %v\n%s\n", err, out)
+		fmt.Fprintf(os.Stderr, "building broc for e2e tests: %v\n%s\n", err, out)
 		os.Exit(1)
 	}
 
@@ -60,10 +60,10 @@ type cliResult struct {
 	ExitCode int
 }
 
-// runDrillbit executes the built binary with args in dir and captures its
+// runBroc executes the built binary with args in dir and captures its
 // output and real exit code (as opposed to relying on the Go test process's
 // own os.Exit machinery).
-func runDrillbit(t *testing.T, dir string, args ...string) cliResult {
+func runBroc(t *testing.T, dir string, args ...string) cliResult {
 	t.Helper()
 	cmd := exec.Command(binPath, args...)
 	cmd.Dir = dir
@@ -76,7 +76,7 @@ func runDrillbit(t *testing.T, dir string, args ...string) cliResult {
 	if err != nil {
 		exitErr, ok := err.(*exec.ExitError)
 		if !ok {
-			t.Fatalf("running drillbit %v: %v", args, err)
+			t.Fatalf("running broc %v: %v", args, err)
 		}
 		code = exitErr.ExitCode()
 	}
@@ -122,8 +122,8 @@ func writeFile(t *testing.T, path string, content []byte) {
 	}
 }
 
-// writeConfig builds a drillbit config for a test, applying the same
-// defaults `drillbit init` would, and saves it to <dir>/drillbit.yaml.
+// writeConfig builds a broc config for a test, applying the same
+// defaults `broc init` would, and saves it to <dir>/broc.yaml.
 func writeConfig(t *testing.T, dir string, mutate func(*config.Config)) string {
 	t.Helper()
 	cfg := &config.Config{
@@ -140,7 +140,7 @@ func writeConfig(t *testing.T, dir string, mutate func(*config.Config)) string {
 		mutate(cfg)
 	}
 	cfg.ApplyDefaults()
-	path := filepath.Join(dir, "drillbit.yaml")
+	path := filepath.Join(dir, "broc.yaml")
 	if err := cfg.Save(path); err != nil {
 		t.Fatalf("writing config: %v", err)
 	}

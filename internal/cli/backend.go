@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
-	"github.com/ravonhenson/drillbit/internal/backend/restic"
-	"github.com/ravonhenson/drillbit/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/backend/restic"
+	"github.com/ravonhenson/broc-cli/internal/config"
 )
 
 func newBackend(cfg *config.Config) (backend.Backend, error) {

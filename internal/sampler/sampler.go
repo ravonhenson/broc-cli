@@ -8,8 +8,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 // Candidate is one file selected for verification this run.

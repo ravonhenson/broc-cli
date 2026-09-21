@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/report"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/report"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 var statusCmd = &cobra.Command{
@@ -71,7 +71,7 @@ var statusCmd = &cobra.Command{
 			}
 			fmt.Fprintln(out, "\nrecent runs:")
 			if len(runs) == 0 {
-				fmt.Fprintln(out, "  (none yet - run `drillbit run`)")
+				fmt.Fprintln(out, "  (none yet - run `broc run`)")
 			}
 			for _, r := range runs {
 				status := "ok"

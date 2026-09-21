@@ -1,6 +1,6 @@
 // Package verify orchestrates one drill: sample candidates, restore each
 // into scratch space, hash it, and diff that hash against the baseline
-// recorded the first time drillbit ever saw that exact (snapshot, path)
+// recorded the first time broc ever saw that exact (snapshot, path)
 // pair. Snapshots are immutable, so a baseline that stops matching means
 // the backend silently returned different bytes than it did before -
 // exactly the kind of corruption `restic check` (which validates pack
@@ -18,10 +18,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/sampler"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/sampler"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 // FileResult is the outcome of verifying a single (snapshot, path) pair.
@@ -35,7 +35,7 @@ type FileResult struct {
 	Error      string       `json:"error,omitempty"`
 }
 
-// RunResult summarizes one `drillbit run` invocation.
+// RunResult summarizes one `broc run` invocation.
 type RunResult struct {
 	RepoName     string       `json:"repo_name"`
 	StartedAt    time.Time    `json:"started_at"`
@@ -53,7 +53,7 @@ func (r RunResult) OK() bool {
 	return r.Mismatches == 0 && r.Errors == 0
 }
 
-// MaxSnapshotsPerRun caps how many snapshots' file listings drillbit will
+// MaxSnapshotsPerRun caps how many snapshots' file listings broc will
 // enumerate in one run, so a repository with thousands of snapshots stays
 // fast per-run. The newest snapshot is always included; the rest are
 // randomly sampled, so coverage still spreads across history over many

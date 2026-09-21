@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/backend"
 )
 
 // These tests drive the real restic binary against a real local repository.
@@ -255,7 +255,7 @@ func TestIntegration_NonexistentRepoFailsCleanly(t *testing.T) {
 // TestIntegration_IncludeMatchingNothingIsReportedAsError exercises the
 // real restic behavior behind RestoreFile's "reported success but file is
 // missing" guard: restic exits 0 and restores 0 files when --include
-// matches nothing, rather than erroring - drillbit must catch that itself.
+// matches nothing, rather than erroring - broc must catch that itself.
 func TestIntegration_IncludeMatchingNothingIsReportedAsError(t *testing.T) {
 	b, src := testRepo(t)
 	repoDir := b.cfg.Repository
@@ -274,7 +274,7 @@ func TestIntegration_IncludeMatchingNothingIsReportedAsError(t *testing.T) {
 }
 
 // TestIntegration_CorruptedPackFailsRestoreRatherThanSilentlyReturningBadData
-// documents and locks in the key real-world behavior driving drillbit's
+// documents and locks in the key real-world behavior driving broc's
 // design: restic content-addresses and checksums blobs, so corrupting a
 // pack file on disk makes RestoreFile *error*, not silently succeed with
 // different bytes. The mismatch-detection path in verify.Run is defense in

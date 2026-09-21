@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/verify"
+	"github.com/ravonhenson/broc-cli/internal/verify"
 )
 
 func TestExitCodeMatrix(t *testing.T) {

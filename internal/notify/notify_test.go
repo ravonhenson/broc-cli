@@ -10,8 +10,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/verify"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/verify"
 )
 
 // recordingServer captures every request it receives so tests can assert on

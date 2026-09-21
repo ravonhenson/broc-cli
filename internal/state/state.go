@@ -1,4 +1,4 @@
-// Package state persists drillbit's verification ledger: which
+// Package state persists broc's verification ledger: which
 // (snapshot, file) pairs have been restored and diffed before, what their
 // baseline content hash was, and when they were last checked. This is what
 // lets coverage accumulate incrementally across many scheduled runs instead
@@ -47,7 +47,7 @@ func key(snapshotID, path string) []byte {
 	return []byte(snapshotID + "\x00" + path)
 }
 
-// RunSummary records the outcome of one `drillbit run` invocation, for
+// RunSummary records the outcome of one `broc run` invocation, for
 // history/status reporting.
 type RunSummary struct {
 	ID           string    `json:"id"` // RFC3339 start time, also the bolt key

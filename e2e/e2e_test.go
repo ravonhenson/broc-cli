@@ -12,17 +12,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 func TestE2E_InitCreatesConfig(t *testing.T) {
 	dir := t.TempDir()
-	res := runDrillbit(t, dir, "init", "--name", "myrepo", "--repository", "/tmp/somewhere")
+	res := runBroc(t, dir, "init", "--name", "myrepo", "--repository", "/tmp/somewhere")
 	if res.ExitCode != 0 {
 		t.Fatalf("init exit=%d stderr=%s", res.ExitCode, res.Stderr)
 	}
-	data, err := os.ReadFile(filepath.Join(dir, "drillbit.yaml"))
+	data, err := os.ReadFile(filepath.Join(dir, "broc.yaml"))
 	if err != nil {
 		t.Fatalf("reading generated config: %v", err)
 	}
@@ -33,15 +33,15 @@ func TestE2E_InitCreatesConfig(t *testing.T) {
 
 func TestE2E_InitRefusesToOverwriteWithoutForce(t *testing.T) {
 	dir := t.TempDir()
-	first := runDrillbit(t, dir, "init", "--name", "a")
+	first := runBroc(t, dir, "init", "--name", "a")
 	if first.ExitCode != 0 {
 		t.Fatalf("first init failed: %s", first.Stderr)
 	}
-	second := runDrillbit(t, dir, "init", "--name", "b")
+	second := runBroc(t, dir, "init", "--name", "b")
 	if second.ExitCode == 0 {
 		t.Fatal("expected the second init to fail without --force")
 	}
-	forced := runDrillbit(t, dir, "init", "--name", "b", "--force")
+	forced := runBroc(t, dir, "init", "--name", "b", "--force")
 	if forced.ExitCode != 0 {
 		t.Fatalf("forced init failed: %s", forced.Stderr)
 	}
@@ -56,7 +56,7 @@ func TestE2E_RunBaselinesThenSettlesToNoNewWork(t *testing.T) {
 
 	cfgPath := writeConfig(t, dir, nil)
 
-	first := runDrillbit(t, dir, "run", "--config", cfgPath)
+	first := runBroc(t, dir, "run", "--config", cfgPath)
 	if first.ExitCode != 0 {
 		t.Fatalf("first run exit=%d\nstdout=%s\nstderr=%s", first.ExitCode, first.Stdout, first.Stderr)
 	}
@@ -64,7 +64,7 @@ func TestE2E_RunBaselinesThenSettlesToNoNewWork(t *testing.T) {
 		t.Errorf("first run stdout = %s, want it to mention new baselines", first.Stdout)
 	}
 
-	second := runDrillbit(t, dir, "run", "--config", cfgPath)
+	second := runBroc(t, dir, "run", "--config", cfgPath)
 	if second.ExitCode != 0 {
 		t.Fatalf("second run exit=%d\nstdout=%s", second.ExitCode, second.Stdout)
 	}
@@ -80,11 +80,11 @@ func TestE2E_StatusReportsCoverage(t *testing.T) {
 	resticBackup(t, repoDir, srcDir)
 	cfgPath := writeConfig(t, dir, nil)
 
-	if res := runDrillbit(t, dir, "run", "--config", cfgPath); res.ExitCode != 0 {
+	if res := runBroc(t, dir, "run", "--config", cfgPath); res.ExitCode != 0 {
 		t.Fatalf("run failed: %s", res.Stderr)
 	}
 
-	status := runDrillbit(t, dir, "status", "--config", cfgPath)
+	status := runBroc(t, dir, "status", "--config", cfgPath)
 	if status.ExitCode != 0 {
 		t.Fatalf("status exit=%d stderr=%s", status.ExitCode, status.Stderr)
 	}
@@ -100,7 +100,7 @@ func TestE2E_JSONOutputIsWellFormed(t *testing.T) {
 	resticBackup(t, repoDir, srcDir)
 	cfgPath := writeConfig(t, dir, nil)
 
-	res := runDrillbit(t, dir, "run", "--config", cfgPath, "--json")
+	res := runBroc(t, dir, "run", "--config", cfgPath, "--json")
 	if res.ExitCode != 0 {
 		t.Fatalf("run exit=%d stderr=%s", res.ExitCode, res.Stderr)
 	}
@@ -132,7 +132,7 @@ func TestE2E_ExitCodeTwoOnOperationalError(t *testing.T) {
 	cfgPath := writeConfig(t, dir, func(c *config.Config) {
 		c.Restic.Repository = filepath.Join(dir, "never-initialized")
 	})
-	res := runDrillbit(t, dir, "run", "--config", cfgPath)
+	res := runBroc(t, dir, "run", "--config", cfgPath)
 	if res.ExitCode != 2 {
 		t.Fatalf("exit=%d, want 2 (operational error)\nstdout=%s\nstderr=%s", res.ExitCode, res.Stdout, res.Stderr)
 	}
@@ -140,7 +140,7 @@ func TestE2E_ExitCodeTwoOnOperationalError(t *testing.T) {
 
 func TestE2E_MissingConfigFileIsOperationalError(t *testing.T) {
 	dir := t.TempDir()
-	res := runDrillbit(t, dir, "run", "--config", filepath.Join(dir, "does-not-exist.yaml"))
+	res := runBroc(t, dir, "run", "--config", filepath.Join(dir, "does-not-exist.yaml"))
 	if res.ExitCode != 2 {
 		t.Fatalf("exit=%d, want 2 for a missing config file\nstderr=%s", res.ExitCode, res.Stderr)
 	}
@@ -151,8 +151,8 @@ func TestE2E_MissingConfigFileIsOperationalError(t *testing.T) {
 // tampering with the recorded baseline directly (rather than corrupting
 // restic's on-disk pack format, which - per the backend integration tests
 // - restic's own ciphertext verification would catch as an error before
-// drillbit's hash comparison ever runs). This isolates and proves out
-// drillbit's own mismatch-reporting path end-to-end.
+// broc's hash comparison ever runs). This isolates and proves out
+// broc's own mismatch-reporting path end-to-end.
 func TestE2E_ExitCodeOneOnMismatch(t *testing.T) {
 	dir := t.TempDir()
 	repoDir, srcDir := resticRepo(t, dir)
@@ -161,7 +161,7 @@ func TestE2E_ExitCodeOneOnMismatch(t *testing.T) {
 
 	cfgPath := writeConfig(t, dir, nil)
 
-	first := runDrillbit(t, dir, "run", "--config", cfgPath)
+	first := runBroc(t, dir, "run", "--config", cfgPath)
 	if first.ExitCode != 0 {
 		t.Fatalf("baseline run exit=%d stderr=%s", first.ExitCode, first.Stderr)
 	}
@@ -193,7 +193,7 @@ func TestE2E_ExitCodeOneOnMismatch(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	second := runDrillbit(t, dir, "run", "--config", cfgPath, "--json")
+	second := runBroc(t, dir, "run", "--config", cfgPath, "--json")
 	if second.ExitCode != 1 {
 		t.Fatalf("exit=%d, want 1 (findings) after tampering with the baseline\nstdout=%s\nstderr=%s",
 			second.ExitCode, second.Stdout, second.Stderr)
@@ -202,7 +202,7 @@ func TestE2E_ExitCodeOneOnMismatch(t *testing.T) {
 		t.Errorf("stdout = %s, want a JSON report of 1 mismatch", second.Stdout)
 	}
 
-	status := runDrillbit(t, dir, "status", "--config", cfgPath)
+	status := runBroc(t, dir, "status", "--config", cfgPath)
 	if status.ExitCode != 1 {
 		t.Errorf("status exit=%d, want 1 while a mismatch remains unresolved", status.ExitCode)
 	}
@@ -238,7 +238,7 @@ func TestE2E_NotifyWebhookAndHealthcheckAreCalled(t *testing.T) {
 		c.Notify.Healthcheck = &config.HealthcheckConfig{PingURL: healthcheckSrv.URL}
 	})
 
-	res := runDrillbit(t, dir, "run", "--config", cfgPath)
+	res := runBroc(t, dir, "run", "--config", cfgPath)
 	if res.ExitCode != 0 {
 		t.Fatalf("run exit=%d stderr=%s", res.ExitCode, res.Stderr)
 	}
@@ -263,7 +263,7 @@ func TestE2E_NotifyWebhookAndHealthcheckAreCalled(t *testing.T) {
 }
 
 // TestE2E_ConcurrentRunFailsCleanlyRatherThanCorruptingState holds the
-// state db lock open in-process (simulating an overlapping `drillbit run`)
+// state db lock open in-process (simulating an overlapping `broc run`)
 // and confirms a second real invocation fails fast and cleanly - exit 2,
 // no panic, no partial/corrupt write - instead of racing the first.
 func TestE2E_ConcurrentRunFailsCleanlyRatherThanCorruptingState(t *testing.T) {
@@ -285,7 +285,7 @@ func TestE2E_ConcurrentRunFailsCleanlyRatherThanCorruptingState(t *testing.T) {
 	defer holder.Close()
 
 	start := time.Now()
-	res := runDrillbit(t, dir, "run", "--config", cfgPath)
+	res := runBroc(t, dir, "run", "--config", cfgPath)
 	elapsed := time.Since(start)
 
 	if res.ExitCode != 2 {
@@ -297,7 +297,7 @@ func TestE2E_ConcurrentRunFailsCleanlyRatherThanCorruptingState(t *testing.T) {
 	}
 }
 
-// TestE2E_RunWorksWithAmbientResticEnvVars confirms drillbit falls back to
+// TestE2E_RunWorksWithAmbientResticEnvVars confirms broc falls back to
 // restic's own ambient environment (as it would in a shell already set up
 // to run `restic` directly) when repository/password aren't in the config
 // at all - the "just works" path the README promises.

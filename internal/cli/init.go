@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ravonhenson/drillbit/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/config"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Create a drillbit config file for a backup repository",
+	Short: "Create a broc config file for a backup repository",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if initName == "" {
 			return fmt.Errorf("--name is required")
@@ -52,7 +52,7 @@ var initCmd = &cobra.Command{
 		if err := cfg.Save(out); err != nil {
 			return err
 		}
-		fmt.Fprintf(cmd.OutOrStdout(), "wrote %s\n\nnext: drillbit run --config %s\n", out, out)
+		fmt.Fprintf(cmd.OutOrStdout(), "wrote %s\n\nnext: broc run --config %s\n", out, out)
 		return nil
 	},
 }

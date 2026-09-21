@@ -1,4 +1,4 @@
-// Package config loads drillbit's per-repository YAML configuration.
+// Package config loads broc's per-repository YAML configuration.
 package config
 
 import (
@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Config is the top-level drillbit configuration for one backup repository.
+// Config is the top-level broc configuration for one backup repository.
 type Config struct {
 	Name    string        `yaml:"name"`
 	Backend string        `yaml:"backend"`
@@ -23,7 +23,7 @@ type Config struct {
 
 // ResticConfig configures the restic backend. All fields are optional:
 // unset values fall back to restic's own ambient environment variables
-// (RESTIC_REPOSITORY, RESTIC_PASSWORD_COMMAND, ...), so drillbit works
+// (RESTIC_REPOSITORY, RESTIC_PASSWORD_COMMAND, ...), so broc works
 // out of the box in an environment already set up to run restic.
 type ResticConfig struct {
 	Binary          string            `yaml:"binary,omitempty"`           // default: "restic"
@@ -36,7 +36,7 @@ type ResticConfig struct {
 
 // ScratchConfig controls where files are restored to during a drill.
 type ScratchConfig struct {
-	Dir  string `yaml:"dir"`            // default: os.TempDir()/drillbit/<repo>
+	Dir  string `yaml:"dir"`            // default: os.TempDir()/broc/<repo>
 	Keep bool   `yaml:"keep,omitempty"` // keep restored files after the run (debugging)
 }
 
@@ -49,7 +49,7 @@ type SampleConfig struct {
 
 // StateConfig controls where the verification ledger is stored.
 type StateConfig struct {
-	Path string `yaml:"path"` // default: ~/.local/state/drillbit/<repo>.db
+	Path string `yaml:"path"` // default: ~/.local/state/broc/<repo>.db
 }
 
 // NotifyConfig configures how results are surfaced loudly.
@@ -87,13 +87,13 @@ func (c *Config) ApplyDefaults() {
 		c.Sample.ReverifyAfterDays = 30
 	}
 	if c.Scratch.Dir == "" {
-		c.Scratch.Dir = filepath.Join(os.TempDir(), "drillbit", safeName(c.Name))
+		c.Scratch.Dir = filepath.Join(os.TempDir(), "broc", safeName(c.Name))
 	}
 	if c.State.Path == "" {
 		home, err := os.UserHomeDir()
 		base := "."
 		if err == nil {
-			base = filepath.Join(home, ".local", "state", "drillbit")
+			base = filepath.Join(home, ".local", "state", "broc")
 		}
 		c.State.Path = filepath.Join(base, safeName(c.Name)+".db")
 	}
@@ -116,7 +116,7 @@ func (c *Config) MaxFileSize() int64 {
 	return c.Sample.MaxFileSizeMB * 1024 * 1024
 }
 
-// Load reads and validates a drillbit config file.
+// Load reads and validates a broc config file.
 func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {

@@ -1,10 +1,10 @@
-// Package cli wires up drillbit's cobra commands.
+// Package cli wires up broc's cobra commands.
 package cli
 
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/ravonhenson/drillbit/internal/report"
+	"github.com/ravonhenson/broc-cli/internal/report"
 )
 
 // version is set at build time via -ldflags "-X .../cli.version=...".
@@ -22,9 +22,9 @@ var (
 var exitCode = report.ExitOK
 
 var rootCmd = &cobra.Command{
-	Use:   "drillbit",
+	Use:   "broc",
 	Short: "Automated restore-drill verification for backup repositories",
-	Long: `drillbit periodically restores a rotating sample of real files from real
+	Long: `broc periodically restores a rotating sample of real files from real
 snapshots in your backup repository, diffs them against a recorded baseline,
 and tracks coverage over time - so "the backup job succeeded" and "you can
 actually restore your data" stop being different claims.
@@ -35,7 +35,7 @@ Supports restic today; borg and kopia backends are on the roadmap.`,
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&cfgPath, "config", "c", "drillbit.yaml", "path to drillbit config file")
+	rootCmd.PersistentFlags().StringVarP(&cfgPath, "config", "c", "broc.yaml", "path to broc config file")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "emit structured JSON output")
 }
 

@@ -1,4 +1,4 @@
-// Package restic implements the drillbit backend.Backend interface on top
+// Package restic implements the broc backend.Backend interface on top
 // of the restic CLI, using its --json output.
 //
 // Notes on restic's JSON, since it's inconsistent across subcommands
@@ -23,7 +23,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/backend"
 )
 
 func init() {

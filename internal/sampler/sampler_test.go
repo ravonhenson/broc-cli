@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 func openTestStore(t *testing.T) *state.Store {

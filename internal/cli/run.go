@@ -5,11 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/notify"
-	"github.com/ravonhenson/drillbit/internal/report"
-	"github.com/ravonhenson/drillbit/internal/state"
-	"github.com/ravonhenson/drillbit/internal/verify"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/notify"
+	"github.com/ravonhenson/broc-cli/internal/report"
+	"github.com/ravonhenson/broc-cli/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/verify"
 )
 
 var runCmd = &cobra.Command{
@@ -38,7 +38,7 @@ var runCmd = &cobra.Command{
 		result, runErr := verify.Run(ctx, cfg, be, store)
 
 		if notifyErr := notify.Send(ctx, cfg.Notify, result, runErr); notifyErr != nil {
-			fmt.Fprintln(cmd.ErrOrStderr(), "drillbit: notification error:", notifyErr)
+			fmt.Fprintln(cmd.ErrOrStderr(), "broc: notification error:", notifyErr)
 		}
 
 		if jsonOut {

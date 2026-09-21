@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/verify"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/verify"
 )
 
 var httpClient = &http.Client{Timeout: 15 * time.Second}
@@ -84,9 +84,9 @@ func pingHealthcheck(ctx context.Context, baseURL string, result verify.RunResul
 
 func summaryText(result verify.RunResult, runErr error) []byte {
 	if runErr != nil {
-		return []byte("drillbit run failed: " + runErr.Error())
+		return []byte("broc run failed: " + runErr.Error())
 	}
-	return []byte(fmt.Sprintf("drillbit: %d checked, %d new baselines, %d mismatches, %d errors",
+	return []byte(fmt.Sprintf("broc: %d checked, %d new baselines, %d mismatches, %d errors",
 		len(result.Files), result.NewBaselines, result.Mismatches, result.Errors))
 }
 

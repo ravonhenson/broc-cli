@@ -182,7 +182,7 @@ func TestOpenSecondInstanceTimesOut(t *testing.T) {
 
 	// A second concurrent Open against the same file should fail (not hang
 	// forever, not silently corrupt the db) once bbolt's lock timeout
-	// elapses - this is what protects against two overlapping `drillbit
+	// elapses - this is what protects against two overlapping `broc
 	// run` invocations against the same repo.
 	_, err = Open(path)
 	if err == nil {

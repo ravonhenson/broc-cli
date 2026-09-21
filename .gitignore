@@ -1,5 +1,5 @@
 /bin/
 /dist/
 *.db
-drillbit.yaml
+broc.yaml
 .DS_Store

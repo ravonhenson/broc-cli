@@ -9,7 +9,7 @@ import (
 
 func TestLoadAppliesDefaults(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "drillbit.yaml")
+	path := filepath.Join(dir, "broc.yaml")
 	if err := os.WriteFile(path, []byte("name: myrepo\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func TestLoadAppliesDefaults(t *testing.T) {
 
 func TestLoadPreservesExplicitValues(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "drillbit.yaml")
+	path := filepath.Join(dir, "broc.yaml")
 	yaml := `
 name: myrepo
 backend: restic
@@ -89,7 +89,7 @@ state:
 }
 
 func TestLoadMissingFile(t *testing.T) {
-	_, err := Load("/nonexistent/drillbit.yaml")
+	_, err := Load("/nonexistent/broc.yaml")
 	if err == nil {
 		t.Fatal("expected an error for a missing config file")
 	}
@@ -97,7 +97,7 @@ func TestLoadMissingFile(t *testing.T) {
 
 func TestLoadInvalidYAML(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "drillbit.yaml")
+	path := filepath.Join(dir, "broc.yaml")
 	if err := os.WriteFile(path, []byte("name: [unterminated"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +108,7 @@ func TestLoadInvalidYAML(t *testing.T) {
 
 func TestLoadMissingName(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "drillbit.yaml")
+	path := filepath.Join(dir, "broc.yaml")
 	if err := os.WriteFile(path, []byte("backend: restic\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -123,7 +123,7 @@ func TestLoadMissingName(t *testing.T) {
 
 func TestSaveRoundTrip(t *testing.T) {
 	dir := t.TempDir()
-	path := filepath.Join(dir, "nested", "drillbit.yaml")
+	path := filepath.Join(dir, "nested", "broc.yaml")
 
 	cfg := &Config{
 		Name:    "roundtrip",

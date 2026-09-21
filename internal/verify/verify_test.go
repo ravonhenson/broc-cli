@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ravonhenson/drillbit/internal/backend"
-	"github.com/ravonhenson/drillbit/internal/config"
-	"github.com/ravonhenson/drillbit/internal/state"
+	"github.com/ravonhenson/broc-cli/internal/backend"
+	"github.com/ravonhenson/broc-cli/internal/config"
+	"github.com/ravonhenson/broc-cli/internal/state"
 )
 
 // fakeBackend is an in-memory backend.Backend for exercising verify.Run
@@ -90,7 +90,7 @@ func TestRunBaselinesThenDetectsMismatch(t *testing.T) {
 
 	// Simulate the backend silently returning different bytes for the same
 	// immutable (snapshot, path) on a later run - exactly the kind of
-	// corruption drillbit exists to catch.
+	// corruption broc exists to catch.
 	fb.content["s1"]["/a.txt"] = []byte("corrupted-content")
 
 	res2, err := Run(context.Background(), cfg, fb, store)

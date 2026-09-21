@@ -1,4 +1,4 @@
-// Package backend defines the interface drillbit uses to talk to a backup
+// Package backend defines the interface broc uses to talk to a backup
 // tool (restic, and later borg/kopia). Each concrete backend translates
 // these calls into that tool's CLI/API.
 package backend

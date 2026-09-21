@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ravonhenson/drillbit/internal/verify"
+	"github.com/ravonhenson/broc-cli/internal/verify"
 )
 
-// Exit codes. Distinguishing 1 (data problem found) from 2 (drillbit
+// Exit codes. Distinguishing 1 (data problem found) from 2 (broc
 // couldn't complete its job) matters for alerting: a mismatch means your
 // backups may not be restorable; an operational error just means this run
 // didn't get to check.
@@ -58,7 +58,7 @@ func PrintJSON(w io.Writer, result verify.RunResult, runErr error) error {
 // PrintText writes a human-readable summary to w.
 func PrintText(w io.Writer, result verify.RunResult, runErr error) {
 	if runErr != nil {
-		fmt.Fprintf(w, "drillbit: %s: RUN FAILED: %v\n", result.RepoName, runErr)
+		fmt.Fprintf(w, "broc: %s: RUN FAILED: %v\n", result.RepoName, runErr)
 		return
 	}
 
@@ -79,7 +79,7 @@ func PrintText(w io.Writer, result verify.RunResult, runErr error) {
 	if !result.OK() {
 		status = "FAILED"
 	}
-	fmt.Fprintf(w, "\ndrillbit: %s: %s - %d checked, %d new baselines, %d mismatches, %d errors (%s)\n",
+	fmt.Fprintf(w, "\nbroc: %s: %s - %d checked, %d new baselines, %d mismatches, %d errors (%s)\n",
 		result.RepoName, status, len(result.Files), result.NewBaselines, result.Mismatches, result.Errors,
 		result.FinishedAt.Sub(result.StartedAt).Round(1e6))
 }
