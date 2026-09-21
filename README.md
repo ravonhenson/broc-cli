@@ -1,4 +1,4 @@
-# broc-cli
+# Backup and Restore Operational Coverage Command Line Interface, broc-cli
 
 [![CI](https://github.com/ravonhenson/broc-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/ravonhenson/broc-cli/actions/workflows/ci.yml)
 
